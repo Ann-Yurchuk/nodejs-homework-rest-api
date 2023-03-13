@@ -7,7 +7,8 @@ const {
   updateStatusContact,
   removeById,
 } = require("../../controllers/contactsControllers");
-const { validation, ctrlWrapper } = require("../../middlewares");
+const { validation } = require("../../middlewares");
+const { ctrlWrapper } = require("../../utils");
 const { joiSchema, favoriteSchema } = require("../../models/contact");
 
 const router = express.Router();

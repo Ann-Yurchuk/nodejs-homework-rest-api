@@ -2,6 +2,7 @@ const { joiSchema, favoriteSchema, Contact } = require("../models/contact");
 const { NotFound } = require("http-errors");
 const { AppError } = require("../utils");
 
+
 const getAll = async (req, res) => {
   const result = await Contact.find({});
   res.status(200).json(result);
