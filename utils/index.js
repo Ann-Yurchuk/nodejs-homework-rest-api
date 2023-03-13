@@ -1,3 +1,4 @@
 const { AppError } = require("./appError");
+const { ctrlWrapper } = require("./ctrlWrapper");
 
-module.exports = { AppError };
+module.exports = { AppError, ctrlWrapper };
