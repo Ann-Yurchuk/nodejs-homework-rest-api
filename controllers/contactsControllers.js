@@ -1,10 +1,15 @@
-const { joiSchema, favoriteSchema, Contact } = require("../models/contact");
+const { joiSchema, favoriteSchema, Contact } = require("../models");
 const { NotFound } = require("http-errors");
 const { AppError } = require("../utils");
 
-
 const getAll = async (req, res) => {
-  const result = await Contact.find({});
+  const { _id } = req.user;
+  const { page = 1, limit = 20 } = req.query;
+  const skip = (page - 1) * limit;
+  const result = await Contact.find({ owner: _id }, "", {
+    skip,
+    limit: Number(limit),
+  }).populate("owner", "_id name email");
   res.status(200).json(result);
 };
 
@@ -19,13 +24,14 @@ const getById = async (req, res) => {
 };
 
 const add = async (req, res) => {
+  const { _id } = req.user;
   const body = req.body;
   const { error } = joiSchema.validate(body);
 
   if (error) {
     throw new AppError(400, "missing required name field");
   }
-  const result = await Contact.create(body);
+  const result = await Contact.create({ ...body, owner: _id });
   res.status(201).json({ result });
 };
 
