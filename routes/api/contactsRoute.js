@@ -7,7 +7,7 @@ const {
   updateStatusContact,
   removeById,
 } = require("../../controllers/contactsControllers");
-const { validation } = require("../../middlewares");
+const { validation, user } = require("../../middlewares");
 const { ctrlWrapper } = require("../../utils");
 const { joiSchema, favoriteSchema } = require("../../models/contact");
 
@@ -15,8 +15,8 @@ const router = express.Router();
 
 router
   .route("/")
-  .get(ctrlWrapper(getAll))
-  .post(validation(joiSchema), ctrlWrapper(add));
+  .get(user, ctrlWrapper(getAll))
+  .post(user, validation(joiSchema), ctrlWrapper(add));
 
 router
   .route("/:contactId")
