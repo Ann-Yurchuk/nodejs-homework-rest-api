@@ -1,6 +1,6 @@
-const { joiSchema, favoriteSchema, Contact } = require("../models");
+const { Contact } = require("../models");
+const { AppError, joiSchema, favoriteSchema } = require("../utils");
 const { NotFound } = require("http-errors");
-const { AppError } = require("../utils");
 
 const getAll = async (req, res) => {
   const { _id } = req.user;

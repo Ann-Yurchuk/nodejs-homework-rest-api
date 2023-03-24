@@ -1,8 +1,15 @@
 const { Conflict, Unauthorized, AppError, NotFound } = require("http-errors");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const { User, joiSubscriptionSchema } = require("../models");
+const gravatar = require("gravatar");
+const jimp = require("jimp");
+const path = require("path");
+const fs = require("fs/promises");
+const { User } = require("../models");
+const { joiSubscriptionSchema } = require("../utils");
 const { SECRET_KEY } = process.env;
+
+const avatarsDir = path.join(__dirname, "../../", "public", "avatars");
 
 const register = async (req, res) => {
   const { email, password } = req.body;
@@ -10,10 +17,12 @@ const register = async (req, res) => {
   if (user) {
     throw new Conflict(`${email} in use`);
   }
+  const avatarURL = gravatar.url(email);
   const hasPassword = await bcrypt.hash(password, bcrypt.genSaltSync(10));
   const result = await User.create({
     email,
     password: hasPassword,
+    avatarURL,
   });
   res.status(201).json({ result });
 };
@@ -60,12 +69,41 @@ const updateStatusUser = async (req, res) => {
     throw new AppError(400, "missing field subscription");
   }
 
-  const result = await User.findByIdAndUpdate(id, { subscription }, { new: true });
+  const result = await User.findByIdAndUpdate(
+    id,
+    { subscription },
+    { new: true }
+  );
 
   if (!result) {
     throw new NotFound(`Not found!`);
   }
   res.status(200).json({ result });
+};
+
+const updateAvatar = async (req, res) => {
+  const { path: tempUpload, originalname } = req.file;
+  const { _id: id } = req.user;
+  const imageName = `${id}_${originalname}`;
+  try {
+    const resultUpload = path.join(avatarsDir, originalname);
+    const img = await jimp.read(req.file);
+    await img
+      .autocrop()
+      .cover(
+        250,
+        250,
+        jimp.HORIZONTAL_ALIGN_CENTER || jimp.VERTICAL_ALIGN_MIDDLE
+      )
+      .writeAsync(req.file);
+    await fs.rename(tempUpload, resultUpload);
+    const avatarURL = path.join("public", "avatars", imageName);
+    await User.findByIdAndUpdate(req.user._id, { avatarURL });
+    res.json({ avatarURL });
+  } catch (error) {
+    await fs.unlink(tempUpload);
+    throw error;
+  }
 };
 
 module.exports = {
@@ -74,4 +112,5 @@ module.exports = {
   getCurrent,
   logout,
   updateStatusUser,
+  updateAvatar,
 };

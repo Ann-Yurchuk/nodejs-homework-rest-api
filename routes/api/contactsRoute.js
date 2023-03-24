@@ -1,4 +1,6 @@
 const express = require("express");
+const { validation, user } = require("../../middlewares");
+const { ctrlWrapper, joiSchema, favoriteSchema } = require("../../utils");
 const {
   getAll,
   getById,
@@ -7,9 +9,6 @@ const {
   updateStatusContact,
   removeById,
 } = require("../../controllers/contactsControllers");
-const { validation, user } = require("../../middlewares");
-const { ctrlWrapper } = require("../../utils");
-const { joiSchema, favoriteSchema } = require("../../models/contact");
 
 const router = express.Router();
 
