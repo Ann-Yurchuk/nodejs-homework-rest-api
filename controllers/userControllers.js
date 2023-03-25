@@ -9,7 +9,7 @@ const { User } = require("../models");
 const { joiSubscriptionSchema } = require("../utils");
 const { SECRET_KEY } = process.env;
 
-const avatarsDir = path.join(__dirname, "../../", "public", "avatars");
+const avatarsDir = path.join(__dirname, "../", "public", "avatars");
 
 const register = async (req, res) => {
   const { email, password } = req.body;
@@ -36,7 +36,7 @@ const login = async (req, res) => {
   const payload = {
     id: user._id,
   };
-  const token = jwt.sign(payload, SECRET_KEY, { expiresIn: "1h" });
+  const token = jwt.sign(payload, SECRET_KEY, { expiresIn: "72h" });
   await User.findByIdAndUpdate(user._id, { token });
   res.status(200).json({ token });
 };
@@ -83,11 +83,14 @@ const updateStatusUser = async (req, res) => {
 
 const updateAvatar = async (req, res) => {
   const { path: tempUpload, originalname } = req.file;
-  const { _id: id } = req.user;
-  const imageName = `${id}_${originalname}`;
+  const { uniqueFileName } = req;
+  console.log(uniqueFileName);
+
+  const { _id } = req.user;
+  const imageName = `${_id}_${originalname}`;
   try {
-    const resultUpload = path.join(avatarsDir, originalname);
-    const img = await jimp.read(req.file);
+    const resultUpload = path.join(avatarsDir, imageName);
+    const img = await jimp.read(req.uniqueFileName);
     await img
       .autocrop()
       .cover(

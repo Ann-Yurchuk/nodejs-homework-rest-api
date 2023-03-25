@@ -18,7 +18,7 @@ const userSchema = Schema(
       type: String,
       required: true,
       default: function () {
-        return gravatar.url(this.email, { s: 250 }, true);
+        return gravatar.url(this.email, { s: "250" }, true);
       },
     },
     subscription: {
