@@ -26,6 +26,11 @@ router.patch(
   validation(joiSubscriptionSchema),
   ctrlWrapper(updateStatusUser)
 );
-router.patch("/avatars", user, upload.single("avatar"), ctrlWrapper(updateAvatar));
+router.patch(
+  "/avatars",
+  user,
+  upload.single("avatar"),
+  ctrlWrapper(updateAvatar)
+);
 
 module.exports = router;

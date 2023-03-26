@@ -2,7 +2,7 @@
 PATCH http://localhost:3000/api/users/avatars/
 Content-Type: multipart/form-data; boundary=boundary
 Content-Disposition: form-data; name="data"; filename="data"
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0MWY0OWRjNDk2YWUyYzc3YWUzYWJlZSIsImlhdCI6MTY3OTc3MjEzNCwiZXhwIjoxNjgwMDMxMzM0fQ.cf6AfzyVOOreOGQ9X4LWWGCWojZvZK7JSjJo-iHUXtc
+Authorization: BearereyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0MjAxMGIwNzE0MGEyY2RjZThiNDc0YyIsImlhdCI6MTY3OTgyMzg4NSwiZXhwIjoxNjgwMDgzMDg1fQ.KdocMzDc2jVS4rUbDIy0SogYLyoWzigW4S4bCMZQ4Ik
 
 --boundary
 Content-Disposition: form-data; name="avatar"; filename="1589874304_1.jpg"
