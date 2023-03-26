@@ -1,11 +1,12 @@
 const jwt = require("jsonwebtoken");
 const { Unauthorized } = require("http-errors");
 const { User } = require("../models");
-const { SECRET_KEY } = process.env;
+
+const SECRET_KEY = "kjhgyu45kjkhj696";
 
 const user = async (req, res, next) => {
-  const { autorization = "" } = req.headers;
-  const [bearer, token] = autorization.split(" ");
+  const { authorization = "" } = req.headers;
+  const [bearer, token] = authorization.split(" ");
   if (bearer !== "Bearer") {
     throw new Unauthorized("Not authorized");
   }
@@ -18,7 +19,7 @@ const user = async (req, res, next) => {
     req.user = user;
     next();
   } catch (error) {
-    if (error.message === "Invalid sugnature") {
+    if (error.message === "Invalid signature") {
       error.status = 401;
     }
     next(error);

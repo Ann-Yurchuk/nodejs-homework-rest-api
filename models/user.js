@@ -1,6 +1,6 @@
 const { Schema, model } = require("mongoose");
-const Joi = require("joi");
 const bcrypt = require("bcryptjs");
+const gravatar = require("gravatar");
 
 const userSchema = Schema(
   {
@@ -13,6 +13,13 @@ const userSchema = Schema(
       type: String,
       required: [true, "Set password for user"],
       minlength: 6,
+    },
+    avatarURL: {
+      type: String,
+      required: true,
+      default: function () {
+        return gravatar.url(this.email, { s: "250" }, true);
+      },
     },
     subscription: {
       type: String,
@@ -34,24 +41,6 @@ userSchema.methods.comparePassword = function (password) {
 
 const User = model("user", userSchema);
 
-const joiRegisterSchema = Joi.object({
-  email: Joi.string().email().required(),
-  password: Joi.string().min(6).required(),
-  subscription: Joi.string().valid("starter", "pro", "business"),
-});
-
-const joiLoginSchema = Joi.object({
-  email: Joi.string().email().required(),
-  password: Joi.string().min(6).required(),
-});
-
-const joiSubscriptionSchema = Joi.object({
-  subscription: Joi.string().valid("starter", "pro", "business"),
-});
-
 module.exports = {
   User,
-  joiRegisterSchema,
-  joiLoginSchema,
-  joiSubscriptionSchema,
 };
