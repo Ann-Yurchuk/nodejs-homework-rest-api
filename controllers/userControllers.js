@@ -19,6 +19,7 @@ const tempDir = path.join(__dirname, "../", "tmp");
 const register = async (req, res) => {
   const { email, password } = req.body;
   const user = await User.findOne({ email });
+
   if (user) {
     throw new Conflict(`${email} in use`);
   }
@@ -128,23 +129,27 @@ const updateAvatar = async (req, res) => {
 const verifyEmail = async (req, res) => {
   const { verificationToken } = req.params;
   const user = await User.findOne({ verificationToken });
+
   if (!user) {
     throw notFound();
   }
+
   await User.findByIdAndUpdate(user._id, {
     verify: true,
     verificationToken: null,
   });
+  
   res.json({ message: "Verification successful" });
 };
 
 const verifyUserControler = async (req, res) => {
   const { email } = req.body;
+  const user = await User.findOne({ email });
 
   if (!email) {
     res.status(400).json({ message: "missing required field email" });
   }
-  const user = await User.findOne({ email });
+
   if (user.verify) {
     res.status(400).json({ message: "Verification has already been passed" });
   }
